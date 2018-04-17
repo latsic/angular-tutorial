@@ -1,0 +1,33 @@
+<div class="container">
+  <div class="myComponent">
+
+    <div class="vertical-center">
+
+    <div class="row myRow vertical-align">
+      <div class="col-xs-4 myElem">
+        <label for="">Username: </label>
+      </div>
+      <div class="col-xs-4 myElem">
+        <input type="text" class="form-control" [(ngModel)]="username">
+      </div>
+      
+      <div class="col-xs-4 myElem">
+        <button class="btn btn-primary" [disabled]="isUsernameEmpty()" (click)="resetUsername()">
+          Reset username
+        </button>
+      </div>
+    </div>
+    <p>{{ username }}</p>
+  </div>
+  </div>
+</div>
+
+
+<hr>
+
+<ol>
+  <li>Add a Input field which updates a property ('username') via Two-Way-Binding</li>
+  <li>Output the username property via String Interpolation (in a paragraph below the input)</li>
+  <li>Add a button which may only be clicked if the username is NOT an empty string</li>
+  <li>Upon clicking the button, the username should be reset to an empty string</li>
+</ol>

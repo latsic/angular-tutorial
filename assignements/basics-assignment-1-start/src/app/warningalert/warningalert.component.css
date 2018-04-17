@@ -1,0 +1,6 @@
+.warn {
+  color: #ececec;
+  outline: 1px solid red;
+  background-color: orange;
+  padding-left: 1rem;
+}

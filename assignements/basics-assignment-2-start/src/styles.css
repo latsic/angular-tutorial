@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+
+.myElem{
+  outline: 1px solid #ff000022;
+}
+
+.myRow{
+  margin-top: 0.5rem;
+  outline: 1px solid #00ff0022;
+}
+
+.vertical-align {
+  display: flex;
+  align-items: center;
+}
