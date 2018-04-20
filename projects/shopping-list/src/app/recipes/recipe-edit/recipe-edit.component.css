@@ -1,0 +1,13 @@
+
+.ingredientList {
+  margin-top: 1rem;
+}
+
+/* .myComp2 {
+  outline: 1px solid blue;
+} */
+
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border: 1px solid red;
+}

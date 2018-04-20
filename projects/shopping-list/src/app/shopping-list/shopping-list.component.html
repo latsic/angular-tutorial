@@ -1,0 +1,54 @@
+
+
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1">
+      <app-shopping-edit></app-shopping-edit>
+    </div>
+  </div>
+  <hr>     
+  <div class="row">
+    
+    <ul class="list-group">
+
+      
+      <li class="col-xs-5 text-left list-group-item col-xs-offset-1">
+        Name
+      </li>
+      <li class="col-xs-5 text-right list-group-item">
+        Amount
+      </li>
+      
+      <a 
+        class="shoppingListItems"
+        *ngFor="let ingredient of ingredients; let i = index"
+        style="cursor: pointer"
+        (click)="onEditItem(i)"
+        
+        >
+        <li
+          class="col-xs-5  list-group-item col-xs-offset-1"
+          [ngStyle]="{backgroundColor: i % 2 == 0 ? '#cccccc' : '#eeeeee'}"
+          >
+          {{ ingredient.name }} 
+        </li>
+        <li
+          class="col-xs-5  text-right list-group-item"
+          [ngStyle]="{backgroundColor: i % 2 == 0 ? '#c9c9c9' : '#e9e9e9'}"
+          >
+          {{ ingredient.amount }}
+        </li>
+      </a>
+
+      <!-- <div class="col-xs-12">
+        <a
+          *ngFor="let ingredient of ingredients; let i = index"
+          class="list-group-item"
+          style="cursor: pointer"
+          (click)="onEditItem(i)"
+        >
+          {{ ingredient.name }} 
+          ({{ ingredient.amount }})
+        </a>
+      </div> -->
+    </ul>
+</div>
