@@ -1,0 +1,26 @@
+<div class="myComponent">
+  <p>
+    <small>start of the {{ componentName }}.</small>
+  </p>
+
+
+
+  <p [ngStyle]="{backgroundColor: getColor()}">
+    {{ "Server" }} with ID {{ serverId }} is {{ getServerStatus() }}
+  </p>
+
+  <p [style.backgroundColor]="getColor()">
+    {{ "Server" }} with ID {{ serverId }} is {{ getServerStatus() }}
+  </p>
+
+  <p
+    [ngStyle]="{backgroundColor: getColor()}"
+    [ngClass]="{online: serverStatus == 'online'}">
+    {{ "Server" }} with ID {{ serverId }} is {{ getServerStatus() }}
+  </p>
+
+  <p>
+    <small>end of the {{ componentName }}.</small>
+  </p>
+
+</div>
