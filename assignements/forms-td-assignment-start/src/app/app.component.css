@@ -1,0 +1,7 @@
+.myComp{
+  margin-top: 0.1rem;
+} 
+
+input.ng-invalid.ng-touched {
+  outline: 1px dashed orange;
+}
