@@ -13,7 +13,9 @@
             name="email"
             id="email"
             ngModel
+            email
             required
+            (ngModelChange)="setChangedAfterSubmit()"
           >
         </div>
         <div
@@ -26,12 +28,22 @@
             id="password"
             ngModel
             required
+            [minlength]="getPasswordMinLen()"
+            (ngModelChange)="setChangedAfterSubmit()"
           >
+        </div>
+        <div
+          *ngIf="sumbitFailed && inputsNotChangedSinceSubmit"
+          class="help-block submitErrorMessage"
+          [ngClass]=""
+          >
+          {{ errorMessage }}
         </div>
         <div>
           <button
             class="btn btn-primary"
             type="submit"
+            [disabled]="!f.valid"
             >
             Sign In
           </button>

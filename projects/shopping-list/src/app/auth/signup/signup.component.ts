@@ -10,6 +10,9 @@ import { AuthService } from '../auth.service';
 export class SignupComponent implements OnInit {
 
   passwordMinLen: number = 6;
+  signupFailed: boolean = false;
+  errorMessage: string = "";
+  inputNotChangedSinceSignup = false;
 
   constructor(private authService: AuthService) {
   }
@@ -20,12 +23,25 @@ export class SignupComponent implements OnInit {
   onSignup(form: NgForm) {
     const email: string = form.value.email;
     const password: string = form.value.password;
+    this.signupFailed = false;
+    this.inputNotChangedSinceSignup = true;
 
-    this.authService.signupUser(email, password);
+    this.authService.signupUser(email, password)
+      .then(() => {
+        console.log(`User ${email} successfully created!`)
+      })
+      .catch((error: Error) => {
+        this.errorMessage = error.message;
+        this.signupFailed = true;
+      });
   }
   
   getPasswordMinLen(): number {
     return this.passwordMinLen;
+  }
+
+  setInputChanged(): void {
+    this.inputNotChangedSinceSignup = false;
   }
 
 }

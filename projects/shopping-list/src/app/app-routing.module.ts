@@ -8,6 +8,7 @@ import { RecipeEditComponent } from "./recipes/recipe-edit/recipe-edit.component
 import { SignupComponent } from "./auth/signup/signup.component";
 import { SigninComponent } from "./auth/signin/signin.component";
 import { AuthGuard } from "./auth/auth-guard.service";
+import { PleaseLoginComponent } from "./please-login/please-login.component";
 
 const appRoutes: Routes = [
   {
@@ -20,8 +21,13 @@ const appRoutes: Routes = [
     component: ShoppingListComponent
   },
   {
+    path: "please-login",
+    component: PleaseLoginComponent
+  },
+  {
     path: "recipes",
     component: RecipesComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: "",

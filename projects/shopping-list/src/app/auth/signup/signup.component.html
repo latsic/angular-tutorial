@@ -13,7 +13,9 @@
           name="email"
           id="email"
           ngModel
+          email
           required
+          (ngModelChange)="setInputChanged()"
         >
       </div>
       <div
@@ -28,18 +30,26 @@
           required
           [minlength]="getPasswordMinLen()"
           #password
+          (ngModelChange)="setInputChanged()"
         >
         <p
           class="help-block"
           *ngIf="password.value.length < getPasswordMinLen()"
           >
-          Password needs to at least {{ getPasswordMinLen() }} characters long!
+          Password needs to be at least {{ getPasswordMinLen() }} characters long!
         </p>
+      </div>
+      <div
+        class="help-block"
+        *ngIf="signupFailed && inputNotChangedSinceSignup"
+        >
+        {{ errorMessage }}
       </div>
       <div>
         <button
           class="btn btn-primary"
           type="submit"
+          [disabled]="!f.valid"
           >
           Sign Up
         </button>

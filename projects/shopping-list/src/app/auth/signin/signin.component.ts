@@ -10,6 +10,11 @@ import { DataStorageService } from '../../shared/data-storage.service';
 })
 export class SigninComponent implements OnInit {
 
+  sumbitFailed: boolean = false;
+  passwordMinLen: number = 6;
+  errorMessage: string = "";
+  inputsNotChangedSinceSubmit = true;
+
   constructor(
     private authService: AuthService,
     private dsService: DataStorageService) {
@@ -20,15 +25,28 @@ export class SigninComponent implements OnInit {
   }
 
   onSignin(form: NgForm): void {
+
+    this.sumbitFailed = false;
+    this.inputsNotChangedSinceSubmit = true;
+
     const email: string = form.value.email;
     const password: string = form.value.password;
     this.authService.signinUser(email, password)
       .then(() => {
         this.dsService.getRecipes();
       })
-      .catch(() => {
-
+      .catch((error) => {
+        this.sumbitFailed = true;
+        this.errorMessage = error.message;
       });
+  }
+
+  getPasswordMinLen(): number {
+    return this.passwordMinLen;
+  }
+
+  setChangedAfterSubmit() {
+    this.inputsNotChangedSinceSubmit = false;
   }
 
 }

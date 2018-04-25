@@ -3,24 +3,36 @@ import * as firebase from "firebase";
 import { Router } from "@angular/router";
 import { Injectable } from "@angular/core";
 
+import { Observable } from "rxjs";
+
 @Injectable()
 export class AuthService {
 
   token: string;
+  userEmail: string;
 
   constructor(
     private router: Router) {
+      
+      firebase.initializeApp({
+        apiKey: "AIzaSyCY6Md14CtyS38oMMlGxUPJVXSXole_QWc",
+        authDomain: "ng-recipe-book-bb599.firebaseapp.com"
+      });
   }
 
-  signupUser(email: string, password: string) {
-    firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(
-      email, password)
-      .then(() => {
-        console.log("Signup successfull!");
-      })
-      .catch((error) => {
-        console.log("firebase auth error", error);
-      });
+  signupUser(email: string, password: string): Promise<any> {
+
+    return firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(
+      email, password);
+
+    // firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(
+    //   email, password)
+    //   .then(() => {
+    //     console.log("Signup successfull!");
+    //   })
+    //   .catch((error) => {
+    //     console.log("firebase auth error", error);
+    //   });
   }
 
   signinUser(email: string, password: string) : Promise<any> {
@@ -31,9 +43,11 @@ export class AuthService {
         email, password)
         .then((response) => {
 
+          this.userEmail = firebase.auth().currentUser.email;
+
           this.router.navigate(['/']);
 
-          firebase.auth().currentUser.getToken()
+          firebase.auth().currentUser.getIdToken()
             .then((token: string) => {
               console.log("signinUser", "retrieved firebase token!");
               this.token = token;
@@ -56,7 +70,7 @@ export class AuthService {
 
   getToken() {
 
-    firebase.auth().currentUser.getToken()
+    firebase.auth().currentUser.getIdToken()
       .then((token: string) => {
         console.log("getToke", "retrieved firebase token!");
         this.token = token;
@@ -67,6 +81,54 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return this.token != null;
+  }
+
+  authenticatedUserEmail(): string {
+    if(this.isAuthenticated()) {
+      return this.userEmail;
+    }
+  }
+
+  autoSignIn(): Promise<boolean> {
+
+    return new Promise((resolve, reject) => {
+
+      console.log("auto Sign in called");
+
+      if(this.isAuthenticated()) {
+        console.log("auto Sign, already authenticated")
+        resolve(true);
+      }
+
+      firebase.auth().onAuthStateChanged(
+        (user: firebase.User) => {
+
+          if(!user){
+            resolve(false);
+            return;
+          }
+
+          console.log("user", user);
+          this.userEmail = user.email;
+
+          if(firebase.auth().currentUser == null) {
+            console.log("auto sign in, error", "no user!");
+            reject(new Error("auto sign in, error, no user!"));
+          }
+          
+          firebase.auth().currentUser.getIdToken()
+            .then((token: string) => {
+              console.log("auto sign in successfull");
+              this.token = token;
+              resolve(true);
+            })
+            .catch((error) => {
+              console.log("auto sign in failed", error);
+              reject(error);
+            }
+          );
+        });
+    });
   }
 
 }
