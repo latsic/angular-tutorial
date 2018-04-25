@@ -19,9 +19,12 @@ export class SigninComponent implements OnInit {
     private authService: AuthService,
     private dsService: DataStorageService) {
 
+      console.log("signin constructor");
   }
 
   ngOnInit() {
+
+    console.log("signin onInit");
   }
 
   onSignin(form: NgForm): void {

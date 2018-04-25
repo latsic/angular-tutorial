@@ -28,11 +28,13 @@ export class AppComponent implements OnInit, OnDestroy {
   
   ngOnInit() {
 
+    this.authService.signinUser("test@test.com", "test11");
+
     this.authService.autoSignIn()
       .then((success) => {
         if(success) {
           this.dsService.getRecipes();
-          this.router.navigate(["/recipes"]);
+          //this.router.navigate(["/recipes"]);
         }
         else {
           this.router.navigate(["/signin"]);
