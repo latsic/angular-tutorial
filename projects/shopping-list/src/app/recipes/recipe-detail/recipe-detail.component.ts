@@ -13,6 +13,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
   recipe: Recipe;
   id: number = -1;
+  recipeInitialized: boolean = false;
 
   paramsSubscription: Subscription;
 
@@ -27,10 +28,14 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     this.paramsSubscription = this.route.params.subscribe(
       (params: Params) => {
         this.id = +params["id"];
-        if(this.id < 0){
+        if(this.id < 0 || this.recipeService.getRecipes().length <= this.id){
           console.log("recipeIndexError", "id", this.id);
+          this.router.navigate(["../"], {relativeTo: this.route})
         }
-        this.recipe = this.recipeService.getRecipe(this.id);
+        else {
+          this.recipe = this.recipeService.getRecipe(this.id);
+          this.recipeInitialized = true;
+        }
       }
     );
   }
