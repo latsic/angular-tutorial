@@ -10,6 +10,7 @@ import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
 import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
 import { RecipesRoutingModule } from "./recipes-routing.module";
 import { SharedModule } from "../shared/shared.module";
+import { CanDeactivateGuard } from "./recipe-edit/can-deactivate-guard.service";
 
 @NgModule({
   declarations : [
@@ -24,6 +25,9 @@ import { SharedModule } from "../shared/shared.module";
     ReactiveFormsModule,
     RecipesRoutingModule,
     SharedModule
+  ],
+  providers: [
+    CanDeactivateGuard
   ]
 })
 export class RecipesModule {

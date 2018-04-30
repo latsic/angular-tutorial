@@ -1,33 +1,43 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { Observable} from "rxjs";
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { RecipeService } from '../recipe.service';
 import { Recipe } from '../recipe.model';
 import { Ingredient } from '../../shared/ingredient.model';
+import { CanComponentDeactivate } from './can-deactivate-guard.service';
+import { DeepEqual } from '../../shared/deepEqual.service';
 
 @Component({
   selector: 'app-recipe-edit',
   templateUrl: './recipe-edit.component.html',
   styleUrls: ['./recipe-edit.component.css']
 })
-export class RecipeEditComponent implements OnInit, OnDestroy {
+export class RecipeEditComponent implements OnInit, OnDestroy, CanComponentDeactivate {
 
   id: number;
   editMode = false;
   recipeForm: FormGroup;
-
+  isCancel = false;
 
   paramsSubscription: Subscription;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private recipeService: RecipeService) {
+    private recipeService: RecipeService,
+    private deepEqual: DeepEqual) {
 
   }
 
+  getIngredientsCtrols(): any {
+    return (<FormArray>this.recipeForm.get('ingredients')).controls;
+  }
+
   ngOnInit() {
+
+    this.isCancel = false;
 
     this.paramsSubscription = this.route.params.subscribe(
       (params: Params) => {
@@ -62,6 +72,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   }
 
   onCancel(): void {
+    this.isCancel = true;
     this.router.navigate(["../"], {relativeTo: this.route});
   }
 
@@ -115,7 +126,29 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
       "description": new FormControl(recipeDescription, [Validators.required]),
       "ingredients": recipeIngredients
     });
-
   }
+
+  canMyComponentDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+
+    console.log("canMyComponentDeactivate");
+
+    const currentRecipe = new Recipe(
+      this.recipeForm.value["name"],
+      this.recipeForm.value["description"],
+      this.recipeForm.value["imagePath"],
+      this.recipeForm.value["ingredients"]
+    );
+
+    if(this.isCancel &&
+      !this.deepEqual.equals(currentRecipe, this.recipeService.getRecipe(this.id))) {
+      console.log("canMyComponentDeactivate",  "NOK");
+      return confirm("Do you want to discard the changes");
+    }
+
+    console.log("canMyComponentDeactivate",  "OK");
+    return true;
+  }
+  
+  
 
 }

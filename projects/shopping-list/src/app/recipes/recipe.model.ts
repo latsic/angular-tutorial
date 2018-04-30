@@ -1,6 +1,5 @@
 import { Ingredient } from "../shared/ingredient.model";
 
-
 export class Recipe {
   
   public name: string;
