@@ -1,18 +1,20 @@
 
 
-import {Injectable } from '@angular/core';
+//import {Injectable } from '@angular/core';
 
 import "rxjs/Rx";
 import { Observable } from "rxjs/Observable"
 
 import { Recipe } from './recipe.model'
 import { Ingredient } from '../shared/ingredient.model';
-import { ShoppingListService } from '../shopping-list/shpping-list.service';
+//import { ShoppingListService } from '../shopping-list/shopping-list.service';
 import { Subject } from 'rxjs/Subject';
-import { Http, Response, Headers } from '@angular/http';
+//import { Store } from '@ngrx/store';
+
+import * as ShoppingListActions from "../shopping-list/store/shopping-list.actions"
 
 
-@Injectable()
+//@Injectable()
 export class RecipeService {
 
   //recipeSelected = new EventEmitter<Recipe>();
@@ -49,12 +51,18 @@ export class RecipeService {
   //   )
   // ];
 
-  constructor(
-    private slService: ShoppingListService,
-    private http: Http) {
+  // constructor(
+  //   private slService: ShoppingListService,
+  //   private store: Store<
+  //     {
+  //       shoppingList: {
+  //         ingredients: Ingredient[],
+  //         editMode: {state: boolean, index: number}
+  //       }
+  //     }>) {
     
-    //this.retrieveRecipes();
-  }
+  //   //this.retrieveRecipes();
+  // }
 
   getRecipes() {
 
@@ -65,9 +73,12 @@ export class RecipeService {
     return this.recipes[index];
   }
 
-  addIngredientsToShoppingList(ingredients: Ingredient[]) {
-    this.slService.addIngredients(ingredients);
-  }
+  // addIngredientsToShoppingList(ingredients: Ingredient[]) {
+  //   //this.slService.addIngredients(ingredients);
+
+  //   //this.store.dispatch(
+  //   //  new ShoppingListActions.AddIngredients(ingredients));
+  // }
 
   addRecipe(recipe: Recipe): number {
     this.recipes.push(recipe);

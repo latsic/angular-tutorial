@@ -1,4 +1,8 @@
 import { NgModule } from "@angular/core";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+
+import { DeepEqual } from "../shared/deepEqual.service";
+
 import { HeaderComponent } from "./header/header.component";
 import { HomeComponent } from "./home/home.component";
 import { NavbarHamburgerCollapseDirective } from "../shared/navbar-hamburger-collapse.directive";
@@ -8,8 +12,13 @@ import { AuthGuard } from "../auth/auth-guard.service";
 import { AuthService } from "../auth/auth.service";
 import { DataStorageService } from "../shared/data-storage.service";
 import { RecipeService } from "../recipes/recipe.service";
-import { ShoppingListService } from "../shopping-list/shpping-list.service";
-import { DeepEqual } from "../shared/deepEqual.service";
+//import { ShoppingListService } from "../shopping-list/shopping-list.service";
+import { AuthInterceptor } from "../shared/auth.interceptor";
+import { LoggingInterceptor } from "../shared/logging.interceptor";
+import { AuthModule } from "../auth/auth.module";
+import { StoreModule } from "@ngrx/store";
+import { authReducer } from "../auth/store/auth.reducers";
+
 
 @NgModule({
   declarations: [
@@ -19,19 +28,31 @@ import { DeepEqual } from "../shared/deepEqual.service";
   ],
   imports: [
     SharedModule,
-    AppRoutingModule
+    AppRoutingModule,
+    AuthModule
   ],
   exports: [
     AppRoutingModule,
-    HeaderComponent
+    HeaderComponent,
+    AuthModule
   ],
   providers: [
-    ShoppingListService,
+    //ShoppingListService,
     RecipeService,
     DataStorageService,
     AuthService,
     AuthGuard,
-    DeepEqual
+    DeepEqual,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoggingInterceptor,
+      multi: true
+    }
   ]
 })
 export class CoreModule {

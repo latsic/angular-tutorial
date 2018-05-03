@@ -33,26 +33,49 @@
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <button
+          <!-- <button
             class="btn btn-success"
             type="submit"
             [disabled]="!f.valid"
             >
             {{ editMode ? "Update" : "Add" }}
-          </button>
+          </button> -->
           <button
+            class="btn btn-success"
+            type="submit"
+            [disabled]="!f.valid"
+            >
+            {{ (shoppingListState | async).editMode.state ? "Update" : "Add" }}
+          </button>
+          <!-- <button
             class="btn btn-danger"
             type="button"
             (click)="onDelete()"
             *ngIf="editMode"
             >
             Delete
-          </button>
+          </button> -->
           <button
+            class="btn btn-danger"
+            type="button"
+            (click)="onDelete()"
+            *ngIf="(shoppingListState | async).editMode.state"
+            >
+            Delete
+          </button>
+          <!-- <button
             class="btn btn-primary"
             type="button"
             (click)="onClear()"
             *ngIf="((amountRef.value != '' && amountRef.value != '1') || nameRef.value != '') || editMode"
+            >
+            Clear
+          </button> -->
+          <button
+            class="btn btn-primary"
+            type="button"
+            (click)="onClear()"
+            *ngIf="((amountRef.value != '' && amountRef.value != '1') || nameRef.value != '') || (shoppingListState | async).editMode.state"
             >
             Clear
           </button>

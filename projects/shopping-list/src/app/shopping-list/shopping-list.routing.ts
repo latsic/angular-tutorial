@@ -6,12 +6,12 @@ import { NgModule } from "@angular/core";
 
 const shoppingListRoutes: Routes = [
   {
-    //path: "shopping-list",
-    //component: ShoppingListComponent,
-    //canActivate: [AuthGuard]
-    path: "",
+    path: "shopping-list",
     component: ShoppingListComponent,
-    canLoad: [AuthGuard]
+    canActivate: [AuthGuard]
+    // path: "",
+    // component: ShoppingListComponent,
+    // canLoad: [AuthGuard]
   }
 ];
 
