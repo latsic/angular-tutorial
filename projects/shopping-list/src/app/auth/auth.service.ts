@@ -4,6 +4,10 @@ import { Router } from "@angular/router";
 import { Injectable } from "@angular/core";
 
 import { Observable } from "rxjs";
+import { Store } from "@ngrx/store";
+
+import * as fromAuth from "./store/auth.reducers";
+import * as AuthActions from "./store/auth.actions";
 
 @Injectable()
 export class AuthService {
@@ -12,7 +16,8 @@ export class AuthService {
   userEmail: string;
 
   constructor(
-    private router: Router) {
+    private router: Router,
+    private store: Store<fromAuth.State>) {
       
       firebase.initializeApp({
         apiKey: "AIzaSyCY6Md14CtyS38oMMlGxUPJVXSXole_QWc",
@@ -22,8 +27,15 @@ export class AuthService {
 
   signupUser(email: string, password: string): Promise<any> {
 
-    return firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(
+    let signUpPromise: Promise<any> =  firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(
       email, password);
+
+    signUpPromise.then((user) => {
+      this.store.dispatch(new AuthActions.Signup(user.email, user.getIdToken()));
+    });
+
+
+    return signUpPromise;
 
     // firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(
     //   email, password)

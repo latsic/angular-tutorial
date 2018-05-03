@@ -24,7 +24,9 @@ export function authReducer(
       case AuthActions.SIGNIN:
         return {
           ...state,
-          authenticated: true
+          authenticated: true,
+          email: action.email,
+          token: action.token
         }
       case AuthActions.LOGOUT:
         return {

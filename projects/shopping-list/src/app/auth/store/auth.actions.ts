@@ -9,7 +9,7 @@ export const SET_TOKEN = "SET_TOKEN";
 export class Signup implements Action {
   readonly type = SIGNUP;
 
-  constructor() {
+  constructor(public email: string, public token: string) {
 
   }
 }
@@ -17,7 +17,7 @@ export class Signup implements Action {
 export class Signin implements Action {
   readonly type = SIGNIN;
 
-  constructor() {
+  constructor(public email: string, public token: string) {
 
   }
 }
