@@ -9,6 +9,10 @@ import { Ingredient } from '../../shared/ingredient.model';
 import { CanComponentDeactivate } from './can-deactivate-guard.service';
 import { DeepEqual } from '../../shared/deepEqual.service';
 
+import * as fromRecipe from "../store/recipe.reducers";
+import * as RecipeActions from "../store/recipe.actions";
+import { Store } from '@ngrx/store';
+
 @Component({
   selector: 'app-recipe-edit',
   templateUrl: './recipe-edit.component.html',
@@ -27,7 +31,8 @@ export class RecipeEditComponent implements OnInit, OnDestroy, CanComponentDeact
     private router: Router,
     private route: ActivatedRoute,
     private recipeService: RecipeService,
-    private deepEqual: DeepEqual) {
+    private deepEqual: DeepEqual,
+    private store: Store<fromRecipe.FeatureState>) {
 
   }
 
@@ -61,12 +66,27 @@ export class RecipeEditComponent implements OnInit, OnDestroy, CanComponentDeact
     console.log("newRecipe", newRecipe);
 
     if(this.editMode) {
-      this.recipeService.updateRecipe(this.id, newRecipe);
+      //this.recipeService.updateRecipe(this.id, newRecipe);
+
+      this.store.dispatch(
+        new RecipeActions.UpdateRecipe(
+          {index: this.id, recipe: newRecipe}));
+
       this.router.navigate(["../"], {relativeTo: this.route});
     }
     else{
-      this.id = this.recipeService.addRecipe(newRecipe);
-      this.router.navigate(["../", this.id], {relativeTo: this.route});
+      //this.id = this.recipeService.addRecipe(newRecipe);
+      this.store.dispatch(new RecipeActions.AddRecipe(newRecipe));
+
+      this.store.select("recipes").take(1).subscribe(
+        (recipeState: fromRecipe.State) => {
+
+          this.id = recipeState.recipes.length - 1;
+          this.router.navigate(["../", this.id], {relativeTo: this.route});
+        }
+      );
+
+      //this.router.navigate(["../", this.id], {relativeTo: this.route});
       //this.router.navigate(["../"], {relativeTo: this.route});
     }
   }
@@ -95,28 +115,38 @@ export class RecipeEditComponent implements OnInit, OnDestroy, CanComponentDeact
 
   private initForm() {
 
+
+
     let recipeName = "";
     let recipeImagePath = "";
     let recipeDescription = "";
     let recipeIngredients = new FormArray([]);
 
     if(this.editMode) {
-      const recipe = this.recipeService.getRecipe(this.id);
-      recipeName = recipe.name;
-      recipeImagePath = recipe.imagePath;
-      recipeDescription = recipe.description;
+      //const recipe = this.recipeService.getRecipe(this.id);
 
-      if(recipe["ingredients"]) {
-        for(let ingredient of recipe.ingredients) {
-          recipeIngredients.push(
-            new FormGroup({
-              "name": new FormControl(ingredient.name, [Validators.required]),
-              "amount": new FormControl(ingredient.amount, [
-                Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)])
-            })
-          );
+      this.store.select("recipes").take(1).subscribe(
+        (recipeState: fromRecipe.State) => {
+
+          const recipe = recipeState.recipes[this.id];
+          
+          recipeName = recipe.name;
+          recipeImagePath = recipe.imagePath;
+          recipeDescription = recipe.description;
+    
+          if(recipe["ingredients"]) {
+            for(let ingredient of recipe.ingredients) {
+              recipeIngredients.push(
+                new FormGroup({
+                  "name": new FormControl(ingredient.name, [Validators.required]),
+                  "amount": new FormControl(ingredient.amount, [
+                    Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)])
+                })
+              );
+            }
+          }
         }
-      }
+      );
     }
 
     this.recipeForm = new FormGroup({
@@ -139,14 +169,32 @@ export class RecipeEditComponent implements OnInit, OnDestroy, CanComponentDeact
       this.recipeForm.value["ingredients"]
     );
 
-    if(this.isCancel &&
-      !this.deepEqual.equals(currentRecipe, this.recipeService.getRecipe(this.id))) {
-      console.log("canMyComponentDeactivate",  "NOK");
-      return confirm("Do you want to discard the changes");
-    }
 
-    console.log("canMyComponentDeactivate",  "OK");
-    return true;
+    return new Promise((resolve, reject) => {
+
+      this.store.select("recipes").take(1).subscribe(
+        (recipeState: fromRecipe.State) => {
+          if(this.isCancel &&
+            !this.deepEqual.equals(currentRecipe, recipeState.recipes[this.id])) {
+            console.log("canMyComponentDeactivate",  "NOK");
+            resolve(confirm("Do you want to discard the changes"));
+          }
+      
+          console.log("canMyComponentDeactivate",  "OK");
+          resolve(true);
+        }
+      );
+    });
+
+
+    // if(this.isCancel &&
+    //   !this.deepEqual.equals(currentRecipe, this.recipeService.getRecipe(this.id))) {
+    //   console.log("canMyComponentDeactivate",  "NOK");
+    //   return confirm("Do you want to discard the changes");
+    // }
+
+    // console.log("canMyComponentDeactivate",  "OK");
+    // return true;
   }
   
   

@@ -11,6 +11,10 @@ import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.compo
 import { RecipesRoutingModule } from "./recipes-routing.module";
 import { SharedModule } from "../shared/shared.module";
 import { CanDeactivateGuard } from "./recipe-edit/can-deactivate-guard.service";
+import { StoreModule } from "@ngrx/store";
+import { recipeReducer } from "./store/recipe.reducers";
+import { EffectsModule } from "@ngrx/effects";
+import { RecipeEffects } from "./store/recipe.effects";
 
 @NgModule({
   declarations : [
@@ -24,7 +28,9 @@ import { CanDeactivateGuard } from "./recipe-edit/can-deactivate-guard.service";
   imports: [
     ReactiveFormsModule,
     RecipesRoutingModule,
-    SharedModule
+    SharedModule,
+    StoreModule.forFeature("recipes", recipeReducer),
+    EffectsModule.forFeature([RecipeEffects])
   ],
   providers: [
     CanDeactivateGuard

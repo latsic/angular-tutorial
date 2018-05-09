@@ -32,13 +32,14 @@
             (ngModelChange)="setChangedAfterSubmit()"
           >
         </div>
+       
         <div
-          *ngIf="sumbitFailed && inputsNotChangedSinceSubmit"
-          class="help-block submitErrorMessage"
-          [ngClass]=""
+          *ngIf="(authState | async).errorMsg && inputsNotChangedSinceSubmit"
+          class="help-block"
           >
-          {{ errorMessage }}
+          {{ (authState | async).errorMsg }}
         </div>
+        
         <div>
           <button
             class="btn btn-primary"

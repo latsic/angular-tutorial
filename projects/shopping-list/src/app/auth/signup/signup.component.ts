@@ -1,39 +1,54 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from '../auth.service';
+//import { AuthService } from '../auth.service';
+//import { Router, ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+
+import { Observable } from "rxjs/Observable";
+
+
+import * as fromApp from "../../store/app.reducers";
+import * as AuthActions from "../store/auth.actions";
+import * as fromAuth from "../store/auth.reducers";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, OnDestroy {
 
   passwordMinLen: number = 6;
-  signupFailed: boolean = false;
-  errorMessage: string = "";
   inputNotChangedSinceSignup = false;
 
-  constructor(private authService: AuthService) {
+  authState: Observable<fromAuth.State>;
+  authSubscription: Subscription;
+
+  constructor(
+    private store: Store<fromApp.AppState>) {
   }
 
   ngOnInit() {
+
+    this.authState = this.store.select("auth");
+    this.authSubscription = this.authState.subscribe(
+      (authData: fromAuth.State) => {
+        if(!authData.authenticated) {
+          this.inputNotChangedSinceSignup = true;
+        }
+      }
+    )
   }
 
+  ngOnDestroy() {
+    this.authSubscription.unsubscribe();
+  }
+  
   onSignup(form: NgForm) {
     const email: string = form.value.email;
     const password: string = form.value.password;
-    this.signupFailed = false;
-    this.inputNotChangedSinceSignup = true;
-
-    this.authService.signupUser(email, password)
-      .then(() => {
-        console.log(`User ${email} successfully created!`)
-      })
-      .catch((error: Error) => {
-        this.errorMessage = error.message;
-        this.signupFailed = true;
-      });
+    this.store.dispatch(new AuthActions.TrySignup({email, password}));
   }
   
   getPasswordMinLen(): number {

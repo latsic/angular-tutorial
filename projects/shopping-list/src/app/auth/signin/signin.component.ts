@@ -1,23 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from '../auth.service';
+
+import { Observable } from "rxjs/Observable";
+import { Subscription } from 'rxjs';
+
+import { Store } from '@ngrx/store';
+
+import * as fromApp from "../../store/app.reducers";
+import * as fromAuth from "../store/auth.reducers";
+import * as AuthActions from "../store/auth.actions";
+
+//import { AuthService } from '../auth.service';
 import { DataStorageService } from '../../shared/data-storage.service';
+
+
 
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css']
 })
-export class SigninComponent implements OnInit {
+export class SigninComponent implements OnInit, OnDestroy {
 
-  sumbitFailed: boolean = false;
   passwordMinLen: number = 6;
-  errorMessage: string = "";
   inputsNotChangedSinceSubmit = true;
 
+  authState: Observable<fromAuth.State>;
+  authSubscription: Subscription;
+
   constructor(
-    private authService: AuthService,
-    private dsService: DataStorageService) {
+    private store: Store<fromApp.AppState>) {
 
       console.log("signin constructor");
   }
@@ -25,23 +37,32 @@ export class SigninComponent implements OnInit {
   ngOnInit() {
 
     console.log("signin onInit");
+
+    this.authState = this.store.select("auth");
+
+    this.authSubscription = this.authState.subscribe(
+      (authData: fromAuth.State) => {
+        if(!authData.authenticated && authData.errorMsg) {
+          this.inputsNotChangedSinceSubmit = true;
+        }
+      }
+    )
+  }
+
+  ngOnDestroy() {
+    this.authSubscription.unsubscribe();
   }
 
   onSignin(form: NgForm): void {
 
-    this.sumbitFailed = false;
-    this.inputsNotChangedSinceSubmit = true;
-
     const email: string = form.value.email;
     const password: string = form.value.password;
-    this.authService.signinUser(email, password)
-      .then(() => {
-        this.dsService.getRecipes();
-      })
-      .catch((error) => {
-        this.sumbitFailed = true;
-        this.errorMessage = error.message;
-      });
+
+    console.log(email);
+    console.log(password);
+
+    this.store.dispatch(new AuthActions.TrySignin(
+      {email: email, password: password}));
   }
 
   getPasswordMinLen(): number {

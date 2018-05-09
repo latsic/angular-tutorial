@@ -64,14 +64,14 @@ export class RecipeService {
   //   //this.retrieveRecipes();
   // }
 
-  getRecipes() {
+  // getRecipes() {
 
-    return this.recipes.slice();
-  }
+  //   return this.recipes.slice();
+  // }
 
-  getRecipe(index: number): Recipe {
-    return this.recipes[index];
-  }
+  // getRecipe(index: number): Recipe {
+  //   return this.recipes[index];
+  // }
 
   // addIngredientsToShoppingList(ingredients: Ingredient[]) {
   //   //this.slService.addIngredients(ingredients);
@@ -80,25 +80,25 @@ export class RecipeService {
   //   //  new ShoppingListActions.AddIngredients(ingredients));
   // }
 
-  addRecipe(recipe: Recipe): number {
-    this.recipes.push(recipe);
-    this.recipesChanged.next(this.recipes.slice());
-    return this.recipes.length - 1;
-  }
+  // addRecipe(recipe: Recipe): number {
+  //   this.recipes.push(recipe);
+  //   this.recipesChanged.next(this.recipes.slice());
+  //   return this.recipes.length - 1;
+  // }
 
-  setRecipes(recipes: Recipe[]): void {
-    this.recipes = recipes;
-    this.recipesChanged.next(this.recipes.slice());
-  }
+  // setRecipes(recipes: Recipe[]): void {
+  //   this.recipes = recipes;
+  //   this.recipesChanged.next(this.recipes.slice());
+  // }
 
-  updateRecipe(index: number, recipe: Recipe): void {
-    this.recipes[index] = recipe;  
-    this.recipesChanged.next(this.recipes.slice());
-  }
+  // updateRecipe(index: number, recipe: Recipe): void {
+  //   this.recipes[index] = recipe;  
+  //   this.recipesChanged.next(this.recipes.slice());
+  // }
 
-  deleteRecipe(index: number): void {
-    this.recipes.splice(index, 1);
-    this.recipesChanged.next(this.recipes.slice());
-  }
+  // deleteRecipe(index: number): void {
+  //   this.recipes.splice(index, 1);
+  //   this.recipesChanged.next(this.recipes.slice());
+  // }
 
 }

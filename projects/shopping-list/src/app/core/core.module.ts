@@ -9,16 +9,13 @@ import { NavbarHamburgerCollapseDirective } from "../shared/navbar-hamburger-col
 import { SharedModule } from "../shared/shared.module";
 import { AppRoutingModule } from "../app-routing.module";
 import { AuthGuard } from "../auth/auth-guard.service";
-import { AuthService } from "../auth/auth.service";
+//import { AuthService } from "../auth/auth.service";
 import { DataStorageService } from "../shared/data-storage.service";
 import { RecipeService } from "../recipes/recipe.service";
 //import { ShoppingListService } from "../shopping-list/shopping-list.service";
 import { AuthInterceptor } from "../shared/auth.interceptor";
 import { LoggingInterceptor } from "../shared/logging.interceptor";
 import { AuthModule } from "../auth/auth.module";
-import { StoreModule } from "@ngrx/store";
-import { authReducer } from "../auth/store/auth.reducers";
-
 
 @NgModule({
   declarations: [
@@ -40,7 +37,7 @@ import { authReducer } from "../auth/store/auth.reducers";
     //ShoppingListService,
     RecipeService,
     DataStorageService,
-    AuthService,
+    //AuthService,
     AuthGuard,
     DeepEqual,
     {

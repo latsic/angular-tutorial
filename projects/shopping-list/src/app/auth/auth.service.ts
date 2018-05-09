@@ -7,140 +7,138 @@ import { Observable } from "rxjs";
 import { Store } from "@ngrx/store";
 
 import * as fromAuth from "./store/auth.reducers";
+import * as fromApp from "../store/app.reducers";
 import * as AuthActions from "./store/auth.actions";
 
 @Injectable()
 export class AuthService {
 
-  token: string;
-  userEmail: string;
+  private fireBaseStateUnsubscribeFunc;
 
   constructor(
     private router: Router,
-    private store: Store<fromAuth.State>) {
+    private store: Store<fromApp.AppState>) {
       
-      firebase.initializeApp({
-        apiKey: "AIzaSyCY6Md14CtyS38oMMlGxUPJVXSXole_QWc",
-        authDomain: "ng-recipe-book-bb599.firebaseapp.com"
-      });
+      // firebase.initializeApp({
+      //   apiKey: "AIzaSyCY6Md14CtyS38oMMlGxUPJVXSXole_QWc",
+      //   authDomain: "ng-recipe-book-bb599.firebaseapp.com"
+      // });
+
+      // console.log("AuthService constructor");
+
+      // store.select("auth").take(1).subscribe(
+      //   (authState: fromAuth.State) => {
+
+      //     console.log("auth state changed, authenticated:",
+      //       authState.authenticated);
+
+      //     if(!authState.authenticated) {
+      //       this.autoSignIn();
+      //     }
+      //   }
+      // );
   }
 
-  signupUser(email: string, password: string): Promise<any> {
+  // signupUser(email: string, password: string): Promise<any> {
 
-    let signUpPromise: Promise<any> =  firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(
-      email, password);
+  //   let signUpPromise: Promise<any> = 
+  //     firebase.auth()
+  //     .createUserAndRetrieveDataWithEmailAndPassword(email, password);
 
-    signUpPromise.then((user) => {
-      this.store.dispatch(new AuthActions.Signup(user.email, user.getIdToken()));
-    });
-
-
-    return signUpPromise;
-
-    // firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(
-    //   email, password)
-    //   .then(() => {
-    //     console.log("Signup successfull!");
-    //   })
-    //   .catch((error) => {
-    //     console.log("firebase auth error", error);
-    //   });
-  }
-
-  signinUser(email: string, password: string) : Promise<any> {
-
-    return new Promise((resolve, reject) => {
-
-      firebase.auth().signInWithEmailAndPassword(
-        email, password)
-        .then((response) => {
-
-          this.userEmail = firebase.auth().currentUser.email;
-
-          this.router.navigate(['/']);
-
-          firebase.auth().currentUser.getIdToken()
-            .then((token: string) => {
-              console.log("signinUser", "retrieved firebase token!");
-              this.token = token;
-            });
+  //   signUpPromise.then(() => {
+  //     this.store.dispatch(new AuthActions.Signup(email)); 
+      
+  //     firebase.auth().currentUser.getIdToken()
+  //       .then((token: string) => {
+  //         console.log("signupUser", "retrieved firebase token!");
           
-          resolve(true);
-          console.log("Signed in successfully", response);
-        })
-        .catch((error) => {
-          console.log("Error while signing in", error);
-          reject(error);
-        });
-      });
-  }
+  //         this.store.dispatch(new AuthActions.SetToken(token));
+  //       });
+  //   });
 
-  logout() {
-    this.token = null;
-    firebase.auth().signOut();
-  }
+  //   return signUpPromise;
+  // }
 
-  getToken() {
+  // signinUser(email: string, password: string) : Promise<any> {
 
-    firebase.auth().currentUser.getIdToken()
-      .then((token: string) => {
-        console.log("getToke", "retrieved firebase token!");
-        this.token = token;
-      });
+  //   let signinPromise = new Promise((resolve, reject) => {
 
-    return this.token;
-  }
+  //     firebase.auth().signInWithEmailAndPassword(
+  //       email, password)
+  //       .then((response) => {
 
-  isAuthenticated(): boolean {
-    return this.token != null;
-  }
+  //         this.store.dispatch(
+  //           new AuthActions.Signin(firebase.auth().currentUser.email));
 
-  authenticatedUserEmail(): string {
-    if(this.isAuthenticated()) {
-      return this.userEmail;
-    }
-  }
+  //         this.router.navigate(['/']);
 
-  autoSignIn(): Promise<boolean> {
+  //         firebase.auth().currentUser.getIdToken()
+  //           .then((token: string) => {
+  //             console.log("signinUser", "retrieved firebase token!");
+              
+  //             this.store.dispatch(new AuthActions.SetToken(token));
 
-    return new Promise((resolve, reject) => {
-
-      console.log("auto Sign in called");
-
-      if(this.isAuthenticated()) {
-        console.log("auto Sign, already authenticated")
-        resolve(true);
-      }
-
-      firebase.auth().onAuthStateChanged(
-        (user: firebase.User) => {
-
-          if(!user){
-            resolve(false);
-            return;
-          }
-
-          console.log("user", user);
-          this.userEmail = user.email;
-
-          if(firebase.auth().currentUser == null) {
-            console.log("auto sign in, error", "no user!");
-            reject(new Error("auto sign in, error, no user!"));
-          }
+  //           });
           
-          firebase.auth().currentUser.getIdToken()
-            .then((token: string) => {
-              console.log("auto sign in successfull");
-              this.token = token;
-              resolve(true);
-            })
-            .catch((error) => {
-              console.log("auto sign in failed", error);
-              reject(error);
-            }
-          );
-        });
-    });
-  }
+  //         resolve(true);
+  //         console.log("Signed in successfully", response);
+  //       })
+  //       .catch((error) => {
+  //         console.log("Error while signing in", error);
+  //         reject(error);
+  //       });
+  //     });
+
+  //   return signinPromise;
+  // }
+
+  // logout() {
+  //   firebase.auth().signOut().then(() => {
+  //     this.store.dispatch(new AuthActions.Logout());
+  //   });
+  // }
+
+  // autoSignIn(): Promise<boolean> {
+
+  //   console.log("auto Sign in called");
+
+  //   return new Promise((resolve, reject) => {
+
+  //     this.fireBaseStateUnsubscribeFunc = firebase.auth().onAuthStateChanged(
+  //       (user: firebase.User) => {
+
+  //         console.log("onAuthStateChanged, user:", user);
+
+  //         if(!user){
+  //           this.fireBaseStateUnsubscribeFunc();
+  //           resolve(false);
+  //           return;
+  //         }
+
+  //         if(firebase.auth().currentUser == null) {
+  //           this.fireBaseStateUnsubscribeFunc();
+  //           reject(new Error("auto sign in, error, no user!"));
+  //         }
+          
+  //         firebase.auth().currentUser.getIdToken()
+  //           .then((token: string) => {
+  //             console.log("auto sign in successfull");
+              
+  //             this.store.dispatch(new AuthActions.AutoSignin(user.email));
+  //             this.store.dispatch(new AuthActions.SetToken(token));
+
+  //             console.log("autosignin token", token);
+  //             this.fireBaseStateUnsubscribeFunc();
+  //             resolve(true);
+  //           })
+  //           .catch((error) => {
+  //             console.log("auto sign in failed", error);
+  //             this.fireBaseStateUnsubscribeFunc();
+  //             reject(error);
+  //           }
+  //         );
+  //       });
+  //   });
+  // }
 
 }

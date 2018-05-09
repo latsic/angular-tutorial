@@ -41,9 +41,9 @@
       </div>
       <div
         class="help-block"
-        *ngIf="signupFailed && inputNotChangedSinceSignup"
+        *ngIf="(authState | async).errorMsg && inputNotChangedSinceSignup"
         >
-        {{ errorMessage }}
+        {{ (authState | async).errorMsg }}
       </div>
       <div>
         <button

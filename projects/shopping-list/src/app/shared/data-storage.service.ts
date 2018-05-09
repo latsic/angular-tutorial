@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 //import { Http, Headers, Response } from "@angular/http";
 import { RecipeService } from "../recipes/recipe.service";
 import { Recipe } from "../recipes/recipe.model";
-import { AuthService } from "../auth/auth.service";
+//import { AuthService } from "../auth/auth.service";
 import { HttpClient, HttpHeaders, HttpParams, HttpRequest } from "@angular/common/http";
 
 
@@ -21,91 +21,98 @@ export class DataStorageService {
     //private http: Http,
     private httpClient: HttpClient,
     private recipeService: RecipeService,
-    private authService: AuthService) {
+    /*private authService: AuthService*/) {
 
   }
 
-  storeRecipes() {
+  // storeRecipes() {
 
-    //const token = this.authService.getToken();
+  //   //const token = this.authService.getToken();
 
-    //const myHeaders = new Headers({'Content-Type': 'application/json'});
+  //   //const myHeaders = new Headers({'Content-Type': 'application/json'});
 
-    // return this.http.put(
-    //   this.recipeBookUrl + "?auth=" + token,
-    //   this.recipeService.getRecipes(),
-    //   {headers: myHeaders}
-    // );
+  //   // return this.http.put(
+  //   //   this.recipeBookUrl + "?auth=" + token,
+  //   //   this.recipeService.getRecipes(),
+  //   //   {headers: myHeaders}
+  //   // );
 
-    //const myHeaders = new HttpHeaders({'Content-Type': 'application/json'});    
+  //   //const myHeaders = new HttpHeaders({'Content-Type': 'application/json'});    
 
-    const myHeaders = new HttpHeaders().set("Content-Type", "application/json");
+  //   const myHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
-    // return this.httpClient.put(
-    //   this.recipeBookUrl,
-    //   this.recipeService.getRecipes(),
-    //   { headers: myHeaders,
-    //     observe: 'events',
-    //     params: new HttpParams().set("auth", token)
-    //   }
-    // );
+  //   // return this.httpClient.put(
+  //   //   this.recipeBookUrl,
+  //   //   this.recipeService.getRecipes(),
+  //   //   { headers: myHeaders,
+  //   //     observe: 'events',
+  //   //     params: new HttpParams().set("auth", token)
+  //   //   }
+  //   // );
 
-    const req = new HttpRequest(
-      "PUT",
-      this.recipeBookUrl,
-      this.recipeService.getRecipes(),
-      {
-        headers: myHeaders,
-        reportProgress: true,
-        // params: new HttpParams().set("auth", token)
-      }
-    );
-    return this.httpClient.request(req);
+  //   const req = new HttpRequest(
+  //     "PUT",
+  //     this.recipeBookUrl,
+  //     this.recipeService.getRecipes(),
+  //     {
+  //       headers: myHeaders,
+  //       reportProgress: true,
+  //       // params: new HttpParams().set("auth", token)
+  //     }
+  //   );
+  //   return this.httpClient.request(req);
 
-  }
+  // }
 
-  getRecipes(): void {
+  // getRecipes(): void {
 
-    const token = this.authService.getToken();
+  //   console.log("getRecipes called");
 
-    // this.http.get(
-    //   this.recipeBookUrl + "?auth=" + token
-    // ).map(
-    //   (response: Response) => {
-    //   const recipes: Recipe[] = response.json();
-    //   recipes.forEach(
-    //     (recipe: Recipe) => {
-    //       console.log("recipe", recipe);
-    //       if(!recipe["ingredients"]) {
-    //         console.log("adding empty ingridient array");
-    //         recipe.ingredients = [];
-    //       }
-    //     });
-    //   return recipes;
-    // }).subscribe(
-    //   (recipes: Recipe[]) => {
-    //     this.recipeService.setRecipes(recipes);
-    //   }
-    // );
+  //   //const token = this.authService.getToken();
 
-    this.httpClient.get<Recipe[]>(
-      this.recipeBookUrl,
-      {
-        // params: new HttpParams().set("auth", token)
-      })
-      .map(
-        (recipes) => {
-          for(let recipe of recipes) {
-            if(!recipe["ingredients"]) {
-              recipe["ingredients"] = [];
-            }
-          }
-          return recipes;
-      }).subscribe(
-        (recipes: Recipe[]) => {
-          this.recipeService.setRecipes(recipes);
-        }
-      );
+  //   // this.http.get(
+  //   //   this.recipeBookUrl + "?auth=" + token
+  //   // ).map(
+  //   //   (response: Response) => {
+  //   //   const recipes: Recipe[] = response.json();
+  //   //   recipes.forEach(
+  //   //     (recipe: Recipe) => {
+  //   //       console.log("recipe", recipe);
+  //   //       if(!recipe["ingredients"]) {
+  //   //         console.log("adding empty ingridient array");
+  //   //         recipe.ingredients = [];
+  //   //       }
+  //   //     });
+  //   //   return recipes;
+  //   // }).subscribe(
+  //   //   (recipes: Recipe[]) => {
+  //   //     this.recipeService.setRecipes(recipes);
+  //   //   }
+  //   // );
+
+  //   this.httpClient.get<Recipe[]>(
+  //     this.recipeBookUrl,
+  //     {
+  //       // params: new HttpParams().set("auth", token)
+  //     })
+  //     .map(
+  //       (recipes) => {
+  //         console.log("fetching: ", recipes);
+  //         for(let recipe of recipes) {
+  //           if(!recipe["ingredients"]) {
+  //             recipe["ingredients"] = [];
+  //           }
+  //         }
+  //         return recipes;
+  //     }).subscribe(
+  //       (recipes: Recipe[]) => {
+  //         console.log("fetched recipes", recipes);
+  //         this.recipeService.setRecipes(recipes);
+  //       }
+  //     );
+
+     
+
     // this.httpClient.get<Recipe[]>(
     //   this.recipeBookUrl + "?auth=" + token,
     //     {
@@ -126,6 +133,6 @@ export class DataStorageService {
     //       }
     //     );
 
-  }
+  //}
 
 }

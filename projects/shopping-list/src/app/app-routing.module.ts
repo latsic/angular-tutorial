@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router'
 import { HomeComponent } from "./core/home/home.component";
+import { AuthGuard } from "./auth/auth-guard.service";
 //import { ShoppingListComponent } from "./shopping-list/shopping-list.component";
 
 const appRoutes: Routes = [
@@ -10,8 +11,14 @@ const appRoutes: Routes = [
   },
   {
     path: "recipes",
+    canLoad: [AuthGuard],
     loadChildren: "./recipes/recipes.module#RecipesModule"
   },
+  {
+    path: "shopping-list",
+    canLoad: [AuthGuard],
+    loadChildren: "./shopping-list/shopping-list.module#ShoppingListModule"
+  }
   // 
   // {
   //   path: "shopping-list",

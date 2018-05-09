@@ -79,7 +79,7 @@
             (click)="onLogout()"
             [routerLink]="['/signin']"
             >
-            Logout ({{ authService.authenticatedUserEmail() }})
+            Logout ({{ (authState | async).email }})
           </a>
         </li>
 
