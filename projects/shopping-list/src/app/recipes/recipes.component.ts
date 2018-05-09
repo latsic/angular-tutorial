@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 //import { Recipe } from './recipe.model';
 import { RecipeService } from './recipe.service';
-import { DataStorageService } from '../shared/data-storage.service';
+//import { DataStorageService } from '../shared/data-storage.service';
 import { Store } from '@ngrx/store';
 //import { Router, ActivatedRoute } from '@angular/router';
 
@@ -32,7 +32,7 @@ export class RecipesComponent implements OnInit, OnDestroy {
   private authSubscription: Subscription;
 
   constructor(
-    private dsService: DataStorageService,
+    //private dsService: DataStorageService,
     private store: Store<fromRecipe.FeatureState>) {
 
   }

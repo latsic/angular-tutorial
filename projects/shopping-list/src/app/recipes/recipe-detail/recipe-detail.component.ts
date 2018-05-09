@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Recipe } from '../recipe.model';
+//import { Recipe } from '../recipe.model';
 //import { RecipeService } from '../recipe.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
-import { Ingredient } from '../../shared/ingredient.model';
+import "rxjs/Add/operator/take";
+//import { Ingredient } from '../../shared/ingredient.model';
 
 import { Observable } from "rxjs/Observable";
 
@@ -13,6 +14,8 @@ import * as ShoppingListActions from "../../shopping-list/store/shopping-list.ac
 //import * as fromApp from "../../store/app.reducers";
 import * as fromRecipe from "../store/recipe.reducers";
 import * as RecipeActions from "../store/recipe.actions";
+
+
 
 @Component({
   selector: 'app-recipe-detail',

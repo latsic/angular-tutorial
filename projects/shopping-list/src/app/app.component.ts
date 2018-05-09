@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as firebase from "firebase"
 import { Subscription } from 'rxjs';
 //import { AuthService } from './auth/auth.service';
-import { DataStorageService } from './shared/data-storage.service';
+//import { DataStorageService } from './shared/data-storage.service';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 //import { Router, ActivatedRoute, Params } from '@angular/router';
@@ -23,7 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     //private authService: AuthService,
-    private dsService: DataStorageService,
+    //private dsService: DataStorageService,
     private router: Router,
     private store: Store<fromApp.AppState>) {
     

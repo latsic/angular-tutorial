@@ -3,7 +3,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable} from "rxjs";
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
-import { RecipeService } from '../recipe.service';
+//import { RecipeService } from '../recipe.service';
 import { Recipe } from '../recipe.model';
 import { Ingredient } from '../../shared/ingredient.model';
 import { CanComponentDeactivate } from './can-deactivate-guard.service';
@@ -30,7 +30,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy, CanComponentDeact
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private recipeService: RecipeService,
+    //private recipeService: RecipeService,
     private deepEqual: DeepEqual,
     private store: Store<fromRecipe.FeatureState>) {
 

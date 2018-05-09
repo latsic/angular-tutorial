@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { DataStorageService } from '../../shared/data-storage.service';
-import { Response } from '@angular/http';
-import { RecipeService } from '../../recipes/recipe.service';
+//import { DataStorageService } from '../../shared/data-storage.service';
+//import { Response } from '@angular/http';
+//import { RecipeService } from '../../recipes/recipe.service';
 //import { AuthService } from '../../auth/auth.service';
-import { HttpEvent } from '@angular/common/http';
+//import { HttpEvent } from '@angular/common/http';
 import * as fromApp from "../../store/app.reducers"
 import { Store } from '@ngrx/store';
 import { Observable } from "rxjs";
@@ -25,8 +25,8 @@ export class HeaderComponent implements OnInit {
   // featureSelected = new EventEmitter<string>();
 
   constructor(
-    private dsService: DataStorageService,
-    private recipeService: RecipeService,
+    //private dsService: DataStorageService,
+    //private recipeService: RecipeService,
     //public authService: AuthService,
     private store: Store<fromApp.AppState>) {
   }
