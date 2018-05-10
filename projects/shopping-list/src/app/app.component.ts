@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as firebase from "firebase"
-import { Subscription } from 'rxjs';
 //import { AuthService } from './auth/auth.service';
 //import { DataStorageService } from './shared/data-storage.service';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 //import { Router, ActivatedRoute, Params } from '@angular/router';
+
+import { Subscription } from 'rxjs';
+import { take } from "rxjs/operators";
 
 import * as fromApp from "./store/app.reducers";
 import * as fromAuth from "./auth/store/auth.reducers";
@@ -38,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
       authDomain: "ng-recipe-book-bb599.firebaseapp.com"
     });
 
-    this.store.select("auth").take(1).subscribe(
+    this.store.select("auth").pipe(take(1)).subscribe(
       (authState: fromAuth.State) => {
 
         console.log("auth state changed, authenticated:",

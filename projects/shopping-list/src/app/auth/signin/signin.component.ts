@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { Observable } from "rxjs/Observable";
-import { Subscription } from 'rxjs';
+import { Observable ,  Subscription } from "rxjs";
 
 import { Store } from '@ngrx/store';
 

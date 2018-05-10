@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable} from "rxjs";
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+
+import { Subscription ,  Observable} from 'rxjs';
+import { take } from "rxjs/operators";
+
 //import { RecipeService } from '../recipe.service';
 import { Recipe } from '../recipe.model';
 import { Ingredient } from '../../shared/ingredient.model';
@@ -78,7 +80,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy, CanComponentDeact
       //this.id = this.recipeService.addRecipe(newRecipe);
       this.store.dispatch(new RecipeActions.AddRecipe(newRecipe));
 
-      this.store.select("recipes").take(1).subscribe(
+      this.store.select("recipes").pipe(take(1)).subscribe(
         (recipeState: fromRecipe.State) => {
 
           this.id = recipeState.recipes.length - 1;
@@ -125,7 +127,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy, CanComponentDeact
     if(this.editMode) {
       //const recipe = this.recipeService.getRecipe(this.id);
 
-      this.store.select("recipes").take(1).subscribe(
+      this.store.select("recipes").pipe(take(1)).subscribe(
         (recipeState: fromRecipe.State) => {
 
           const recipe = recipeState.recipes[this.id];
@@ -172,7 +174,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy, CanComponentDeact
 
     return new Promise((resolve, reject) => {
 
-      this.store.select("recipes").take(1).subscribe(
+      this.store.select("recipes").pipe(take(1)).subscribe(
         (recipeState: fromRecipe.State) => {
           if(this.isCancel &&
             !this.deepEqual.equals(currentRecipe, recipeState.recipes[this.id])) {

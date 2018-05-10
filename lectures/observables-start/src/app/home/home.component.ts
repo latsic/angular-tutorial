@@ -1,10 +1,9 @@
 //declare const myEasyTimer: any;
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import "rxjs/Rx";
-import { Observer } from 'rxjs/Observer';
-import { Subscription } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
+import { Observer } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',

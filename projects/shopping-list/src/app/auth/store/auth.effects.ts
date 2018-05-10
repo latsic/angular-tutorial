@@ -2,15 +2,9 @@
 import { Effect, Actions } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 
-import { fromPromise } from "rxjs/observable/fromPromise";
-import { from } from "rxjs/observable/from";
-import { of } from "rxjs/observable/of";
-import { pairs } from "rxjs/observable/pairs";
-import { Observable } from "rxjs/Observable";
+import { from, of, Observable } from "rxjs";
+import { map, switchMap, mergeMap, catchError } from "rxjs/operators";
 
-import "rxjs/add/operator/switchMap";
-import "rxjs/add/operator/mergeMap";
-import "rxjs/add/operator/map";
 
 import * as AuthActions from "./auth.actions";
 
@@ -19,18 +13,16 @@ import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 
 interface AuthData{
-  email: string,
-  password: string,
-  token: string,
-  myError: Error
+  email: string;
+  password: string;
+  token: string;
+  myError: Error;
 }
 
 @Injectable()
 export class AuthEffects {
 
   private fireBaseStateUnsubscribeFunc: firebase.Unsubscribe;
-
-  
 
   constructor(
     private actions$: Actions,
@@ -48,7 +40,7 @@ export class AuthEffects {
 
           console.log("onAuthStateChanged, user:", user);
 
-          if(!user){
+          if(!user) {
             this.fireBaseStateUnsubscribeFunc();
             resolve({email: null, token: null});
             return;
@@ -79,8 +71,8 @@ export class AuthEffects {
 
   @Effect()
   authSignup = this.actions$
-    .ofType(AuthActions.TRY_SIGNUP)
-    .map((action: AuthActions.TrySignup) => {
+    .ofType(AuthActions.TRY_SIGNUP).pipe(
+    map((action: AuthActions.TrySignup) => {
       console.log("authSignup Called");
 
       const authdata: AuthData = {
@@ -91,33 +83,34 @@ export class AuthEffects {
       };
 
       return authdata;
-    })
-    .switchMap(
+    }),
+    switchMap(
       (authData: AuthData) => {
-        return fromPromise(firebase.auth().createUserWithEmailAndPassword(
-          authData.email, authData.password))
-          .map(() => authData)
-          .catch(error => {
+        return from(firebase.auth().createUserWithEmailAndPassword(
+          authData.email, authData.password)).pipe(
+          map(() => authData),
+          catchError(error => {
             authData.myError = error;
             return of(authData);
-          });
+          }));
       }
-    )
-    .switchMap(
+    ),
+    switchMap(
       (authData: AuthData) => {
 
         if(authData.myError) {
           return of(authData);
         }
-        return fromPromise(firebase.auth().currentUser.getIdToken())
-          .map((firebaseToken: string) => {
+        return from(firebase.auth().currentUser.getIdToken()).pipe(
+          map((firebaseToken: string) => {
 
             authData.token = firebaseToken;
             return authData;
-          });
+          })
+        );
       }
-    )
-    .mergeMap((authData: AuthData) => {
+    ),
+    mergeMap((authData: AuthData) => {
 
       console.log("signupData", authData);
 
@@ -130,106 +123,113 @@ export class AuthEffects {
         (<Action> new AuthActions.SetToken(authData.token)),
         (<Action> new AuthActions.Signup(authData.email)) 
       ];   
-    });
+    })
+  );
 
 
   @Effect()
   authSignin = this.actions$
-    .ofType(AuthActions.TRY_SIGNIN)
-    .map((action: AuthActions.TrySignin) => {
-      console.log("effect signin");
-      
-      let authData: AuthData = {
-        email: action.payload.email,
-        password: action.payload.password,
-        token: null,
-        myError: null
-      };
-      
-      return authData;
-    })
-    .switchMap((authData: AuthData) => {
-      return fromPromise(
-        firebase.auth().signInWithEmailAndPassword(
-          authData.email, authData.password))
-        .map(() => authData)
-        .catch((error) => {
-          console.log("sign in error");
-          authData.myError = error;
+    .ofType(AuthActions.TRY_SIGNIN).pipe(
+      map((action: AuthActions.TrySignin) => {
+        console.log("effect signin");
+        
+        let authData: AuthData = {
+          email: action.payload.email,
+          password: action.payload.password,
+          token: null,
+          myError: null
+        };
+        
+        return authData;
+      }),
+      switchMap((authData: AuthData) => {
+        return from(
+          firebase.auth().signInWithEmailAndPassword(
+            authData.email, authData.password)).pipe(
+            map(() => authData),
+            catchError((error) => {
+              console.log("sign in error");
+              authData.myError = error;
+              return of(authData);
+            })
+          );
+      }),
+      switchMap((authData: AuthData) => {
+
+        console.log("signin switchmap");
+
+        if(authData.myError) {
           return of(authData);
-        });
-    })
-    .switchMap((authData: AuthData) => {
+        }
 
-      console.log("signin switchmap");
+        return from(firebase.auth().currentUser.getIdToken()).pipe(
+          map((token: string) => {
+            authData.token = token;
+            return authData;
+          })
+        );
+      }),
+      mergeMap((authData: AuthData) => {
 
-      if(authData.myError) {
-        return of(authData);
-      }
-
-      return fromPromise(firebase.auth().currentUser.getIdToken())
-        .map((token: string) => {
-          authData.token = token;
-          return authData;
-      });
-    })
-    .mergeMap((authData: AuthData) => {
-
-      if(authData.myError) {
-        return [(<Action>new AuthActions.AuthError(authData.myError))];
-      }
-      
-      this.router.navigate(["/recipes"]);
-      return [(<Action>new AuthActions.SetToken(authData.token)),
-              (<Action>new AuthActions.Signin(authData.email))];
-      
-    });
+        if(authData.myError) {
+          return [(<Action>new AuthActions.AuthError(authData.myError))];
+        }
+        
+        this.router.navigate(["/recipes"]);
+        return [(<Action>new AuthActions.SetToken(authData.token)),
+                (<Action>new AuthActions.Signin(authData.email))];
+        
+      })
+    );
   
   @Effect()
   authLogout = this.actions$
-    .ofType(AuthActions.TRY_LOGOUT)
-    .switchMap(() => {
-      return fromPromise(firebase.auth().signOut());
-    })
-    .map(() => {return {type: AuthActions.LOGOUT}});
+    .ofType(AuthActions.TRY_LOGOUT).pipe(
+      switchMap(() => {
+        return from(firebase.auth().signOut());
+      }),
+      map(() => {return {type: AuthActions.LOGOUT}})
+    );
     
   @Effect()
   authAutoSignin = this.actions$
-    .ofType(AuthActions.TRY_AUTOSIGNIN)
-    .switchMap(() => {
-      return fromPromise(this.autoSignIn())
-        .map((autoSigninData: {email: string, token: string}) => {
-          return {
-            email: autoSigninData.email,
-            password: null,
-            token: autoSigninData.token,
-            error: null
-          };
-        })
-        .catch((error: Error) => {
-          console.log("AutosignIn error", error);
-          return of({
-            myError: error
-          });
-        });
-    })
-    .mergeMap((authData: AuthData) => {
+    .ofType(AuthActions.TRY_AUTOSIGNIN).pipe(
+      switchMap(() => {
+        return from(this.autoSignIn()).pipe(
+          map((autoSigninData: {email: string, token: string}) => {
+            return {
+              email: autoSigninData.email,
+              password: null,
+              token: autoSigninData.token,
+              error: null
+            };
+          }),
+          catchError((error: Error) => {
+            console.log("AutosignIn error", error);
+            return of({
+              myError: error
+            });
+          })
+        );
+      }),
+      mergeMap((authData: AuthData) => {
 
-      console.log("autosignin", authData);
+        console.log("autosignin", authData);
 
-      if(authData.myError) {
+        if(authData.myError) {
+          return [
+            (<Action> new AuthActions.AuthError(authData.myError))
+          ];
+        }
+        if(!authData.email || !authData.token) {
+          return of({});
+        }
+
+        this.router.navigate(["/recipes"]);
         return [
-          (<Action> new AuthActions.AuthError(authData.myError))
+          (<Action> new AuthActions.SetToken(authData.token)),
+          (<Action> new AuthActions.AutoSignin(authData.email))
         ];
-      }
-      if(!authData.email || !authData.token) {
-        return Observable.empty();
-      }
-
-      this.router.navigate(["/recipes"]);
-      return [
-        (<Action> new AuthActions.SetToken(authData.token)),
-        (<Action> new AuthActions.AutoSignin(authData.email))
-      ];
-    });
+      })
+    );
 }

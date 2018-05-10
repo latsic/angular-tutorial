@@ -4,13 +4,12 @@ import { NgForm } from '@angular/forms';
 //import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import { Observable } from "rxjs/Observable";
+import { Observable ,  Subscription } from "rxjs";
 
 
 import * as fromApp from "../../store/app.reducers";
 import * as AuthActions from "../store/auth.actions";
 import * as fromAuth from "../store/auth.reducers";
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signup',

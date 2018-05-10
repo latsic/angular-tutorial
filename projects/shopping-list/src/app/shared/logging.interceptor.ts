@@ -4,7 +4,7 @@ import {
   HttpEvent,
   HttpHandler } from "@angular/common/http";
 import { Observable } from "rxjs";
-import "rxjs/add/operator/do"
+import { tap } from "rxjs/operators";
 
 export class LoggingInterceptor implements HttpInterceptor {
   
@@ -12,9 +12,9 @@ export class LoggingInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler): Observable<HttpEvent<any>> {
 
-      return next.handle(request).do(
+      return next.handle(request).pipe(tap(
        (httpEvent: HttpEvent<any>) => {
          console.log("LoggingInterceptor intercept", httpEvent);
-       }); 
+       })); 
   }
 }

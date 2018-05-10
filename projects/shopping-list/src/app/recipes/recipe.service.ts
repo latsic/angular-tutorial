@@ -2,13 +2,11 @@
 
 //import {Injectable } from '@angular/core';
 
-import "rxjs/Rx";
-import { Observable } from "rxjs/Observable"
+
+import { Observable ,  Subject } from "rxjs"
 
 import { Recipe } from './recipe.model'
 import { Ingredient } from '../shared/ingredient.model';
-//import { ShoppingListService } from '../shopping-list/shopping-list.service';
-import { Subject } from 'rxjs/Subject';
 //import { Store } from '@ngrx/store';
 
 import * as ShoppingListActions from "../shopping-list/store/shopping-list.actions"

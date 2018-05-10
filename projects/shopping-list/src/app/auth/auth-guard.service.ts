@@ -1,8 +1,15 @@
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanLoad, Route } from "@angular/router";
-import { Observable} from "rxjs"
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  CanLoad,
+  Route } from "@angular/router";
 import { Injectable } from "@angular/core";
 //import { AuthService } from "./auth.service";
 import { Store } from "@ngrx/store";
+
+import { Observable} from "rxjs";
+import { take, map } from "rxjs/operators";
 
 import * as fromApp from "../store/app.reducers";
 import * as fromAuth from "./store/auth.reducers";
@@ -18,13 +25,13 @@ export class AuthGuard implements CanActivate, CanLoad {
   }
 
   private allowed(): Observable<boolean> {
-    return this.store.select("auth").take(1).map(
+    return this.store.select("auth").pipe(take(1), map(
       (authState: fromAuth.State) => {
 
         console.log("allowed?", authState.authenticated);
         return authState.authenticated;
       }
-    );
+    ));
   }
 
   canActivate(

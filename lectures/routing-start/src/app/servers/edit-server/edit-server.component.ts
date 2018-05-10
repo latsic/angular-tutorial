@@ -4,7 +4,7 @@ import { ServersService } from '../servers.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { CanComponentDeactivate } from './can-deactivate-guard.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-edit-server',

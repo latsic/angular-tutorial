@@ -2,12 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 //import { Recipe } from '../recipe.model';
 //import { RecipeService } from '../recipe.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import "rxjs/Add/operator/take";
-//import { Ingredient } from '../../shared/ingredient.model';
-
-import { Observable } from "rxjs/Observable";
+import { take } from "rxjs/operators";
 
 import * as ShoppingListActions from "../../shopping-list/store/shopping-list.actions"
 //import * as fromShoppingList from "../../shopping-list/store/shopping-list.reducers";
@@ -48,7 +45,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
         this.recipesState = this.store.select("recipes");
 
-        this.recipesState.take(1).subscribe(
+        this.recipesState.pipe(take(1)).subscribe(
           (recipeData: fromRecipe.State) => {
             console.log("RecipeDetailComponent nginit", recipeData);
           }
@@ -73,7 +70,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
   onAddToShoppingList(): void {
     //this.recipeService.addIngredientsToShoppingList(this.recipe.ingredients);
 
-    this.store.select("recipes").take(1).subscribe(
+    this.store.select("recipes").pipe(take(1)).subscribe(
       (recipeState: fromRecipe.State) => {
         this.store.dispatch(
           new ShoppingListActions.AddIngredients(
