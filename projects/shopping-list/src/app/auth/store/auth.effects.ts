@@ -2,7 +2,7 @@
 import { Effect, Actions } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 
-import { from, of, Observable } from "rxjs";
+import { from, of, Observable, empty } from "rxjs";
 import { map, switchMap, mergeMap, catchError } from "rxjs/operators";
 
 
@@ -222,7 +222,8 @@ export class AuthEffects {
           ];
         }
         if(!authData.email || !authData.token) {
-          return of({});
+          // return of({});
+          return empty();
         }
 
         this.router.navigate(["/recipes"]);
